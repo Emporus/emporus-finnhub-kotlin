@@ -5448,6 +5448,71 @@ class DefaultApi(basePath: kotlin.String = defaultBasePath) : ApiClient(basePath
     }
 
     /**
+     * Market Capitalization (hidden API)
+     *
+     * @param symbol Symbol.
+     * @param from date. Interval initial value.
+     * @param to date. Interval end value.
+     * @return MarketCapResult
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    fun marketCap(symbol: kotlin.String, from: LocalDate, to: LocalDate): MarketCapResult = with(
+        request<Unit, MarketCapResult>(marketCapRequestConfig(symbol, from, to))
+    ) {
+        when (responseType) {
+            ResponseType.Success -> (this as Success<MarketCapResult>).data
+            ResponseType.Informational -> throw UnsupportedOperationException(
+                "Client does not support Informational responses."
+            )
+            ResponseType.Redirection -> throw UnsupportedOperationException(
+                "Client does not support Redirection responses."
+            )
+            ResponseType.ClientError -> {
+                val localVarError = this as ClientError<*>
+                throw ClientException(
+                    "Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}",
+                    localVarError.statusCode,
+                    this
+                )
+            }
+            ResponseType.ServerError -> {
+                val localVarError = this as ServerError<*>
+                throw ServerException(
+                    "Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}",
+                    localVarError.statusCode,
+                    this
+                )
+            }
+        }
+    }
+
+    /**
+     * To obtain the request config of the operation marketCap
+     *
+     * @param symbol Symbol.
+     * @param from UNIX timestamp. Interval initial value.
+     * @param to UNIX timestamp. Interval end value.
+     * @return RequestConfig
+     */
+    fun marketCapRequestConfig(
+        symbol: kotlin.String, from: LocalDate, to: LocalDate
+    ): RequestConfig<Unit> = RequestConfig(
+        method = RequestMethod.GET,
+        path = "/stock/historical-market-cap",
+        query = mutableMapOf<String, List<String>>().apply {
+            put("symbol", listOf(symbol))
+            put("from", listOf(from.toString()))
+            put("to", listOf(to.toString()))
+        },
+        headers = mutableMapOf(),
+        body = null
+    )
+
+    /**
      * Dividends
      * Get dividends data for common stocks going back 30 years.
      * @param symbol Symbol.
