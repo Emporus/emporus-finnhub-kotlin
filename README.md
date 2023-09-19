@@ -1,35 +1,86 @@
-# Kotlin client library for Finnhub API
+# Kotlin client library for Finnhub API Emporus Edition
+
+A fork from original SDK (v2.0.19) with added hidden API for fetching market capitalization history.
 
 ## Requires
 
-- Kotlin 1.3.41
+- Kotlin 1.9.10
 - Gradle 4.9
 
 ## Installation
 
-Install package
+### For Gradle (Kotlin DSL)
 
-```
+Add to `build.gradle.kts` repositories section:
+
+```kootlin
+val spaceUsername: String by project
+val spacePassword: String by project
+
 repositories {
-    mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.jetbrains.space/emporus/p/dev/emporus-maven")
+        credentials {
+            username = spaceUsername
+            password = spacePassword
+        }
+    }
 }
 ```
 
-For Maven
+Add to `build.gradle.kts` dependencies section:
 
+```kotlin
+dependencies {
+    implementation("io.finnhub:emporus-finnhub-kotlin:2.1.0")
+}
 ```
+
+Specify values for declared variables in your `gradle.properties` file:
+
+*Follow connect [instructions](https://maven.pkg.jetbrains.space/emporus/p/dev/emporus-maven) to get
+your access token from Space (blue button).*
+
+```properties
+spaceUsername=Your.Space.Login
+spacePassword=****************
+```
+
+### For Maven
+
+Add private repository to `pom.xml`
+
+```xml
+<repositories>
+    <repository>
+        <id>space-emporus-maven</id>
+        <url>https://maven.pkg.jetbrains.space/emporus/p/dev/emporus-maven</url>
+    </repository>
+</repositories>
+```
+And add dependency to `pom.xml`:
+
+```xml 
 <dependency>
   <groupId>io.finnhub</groupId>
-  <artifactId>kotlin-client</artifactId>
-  <version>2.0.19</version>
-  <type>pom</type>
+  <artifactId>emporus-finnhub-kotlin</artifactId>
+  <version>2.1.0</version>
 </dependency>
 ```
 
-For Gradle
+Authenticate to repository by adding to `settings.xml`:
 
-```
-implementation 'io.finnhub:kotlin-client:2.0.19'
+*Follow connect [instructions](https://maven.pkg.jetbrains.space/emporus/p/dev/emporus-maven) to get
+your access token from Space (blue button).*
+
+```xml
+<servers>
+    <server>
+        <id>space-emporus-maven</id>
+        <username>Your.Space.Login</username>
+        <password>****************</password>
+    </server>
+</servers>
 ```
 
 ## Migrate from 1.x.x to 2.x.x
@@ -46,6 +97,11 @@ import io.finnhub.api.infrastructure.ApiClient
 
 ApiClient.apiKey["token"] = "YOUR API KEY"
 val apiClient = DefaultApi()
+
+@Test
+fun marketCap() {  // New API for Emporus (since v2.1.0)
+  println(apiClient.marketCap("AAPL", LocalDate.parse("1999-01-01"), LocalDate.now()))
+}
 
 @Test
 fun technicalIndicator() {
@@ -447,9 +503,9 @@ fun stockVisaApplication() {
 fun insiderSentiment() {
   println(apiClient.insiderSentiment("AAPL", "2019-01-01", "2022-12-31"))
 }
-
 ```
 
 ## License
 
 Apache License
+
