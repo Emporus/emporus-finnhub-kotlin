@@ -2,8 +2,8 @@ package io.finnhub.api
 
 import io.finnhub.api.apis.DefaultApi
 import io.finnhub.api.infrastructure.ApiClient
-import org.junit.Ignore
 import org.junit.Test
+import java.time.LocalDate
 
 class DefaultApiTest {
     private val apiClient: DefaultApi
@@ -494,5 +494,10 @@ class DefaultApiTest {
     @Test
     fun bondYield() {
         println(apiClient.bondYieldCurve("10y"))
+    }
+
+    @Test
+    fun marketCap() {
+        println(apiClient.marketCap("AAPL", LocalDate.parse("1999-01-01"), LocalDate.now()))
     }
 }
